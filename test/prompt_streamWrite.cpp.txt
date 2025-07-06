@@ -1,0 +1,48 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#include "json/json.h"
+#include <iostream>
+#include <memory>
+/** \brief Write the Value object to a stream.
+ * Example Usage:
+ * $g++ streamWrite.cpp -ljsoncpp -std=c++11 -o streamWrite
+ * $./streamWrite
+ * {
+ *     "Age" : 20,
+ *     "Name" : "robin"
+ * }
+ */
+int main() {
+  Json::Value root;
+  Json::StreamWriterBuilder builder;
+  const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+
+  root["Name"] = "robin";
+  root["Age"] = 20;
+  writer->write(root, &std::cout);
+
+  return EXIT_SUCCESS;
+}
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

@@ -1,0 +1,24 @@
+// test_template.txt
+#include <drogon/drogon.h>
+#include <drogon/test/TestCase.h>
+
+// Test for {controller_name} - {method_name}
+DROGON_TEST({controller_name}{method_name}Test)
+{
+    // Test successful case
+    auto client = app().getHttpClient();
+    Json::Value request;
+    {request_fields}
+    
+    auto req = HttpRequest::newHttpJsonRequest(request);
+    req->setPath("{endpoint_path}");
+    req->setMethod(HttpMethod::{http_method});
+    
+    client->sendRequest(req, [TEST_CTX](ReqResult result, const HttpResponsePtr& resp){
+        REQUIRE(result == ReqResult::Ok);
+        REQUIRE(resp->getStatusCode() == HttpStatusCode::{expected_status});
+        
+        auto json = *resp->getJsonObject();
+        {response_assertions}
+    });
+}

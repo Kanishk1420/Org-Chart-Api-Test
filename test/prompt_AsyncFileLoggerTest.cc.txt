@@ -1,0 +1,70 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#include <trantor/utils/Logger.h>
+#include <trantor/utils/AsyncFileLogger.h>
+#include <stdlib.h>
+#include <thread>
+int main()
+{
+    trantor::AsyncFileLogger asyncFileLogger;
+    asyncFileLogger.setFileName("async_test");
+    asyncFileLogger.startLogging();
+    trantor::Logger::setOutputFunction(
+        [&](const char *msg, const uint64_t len) {
+            asyncFileLogger.output(msg, len);
+        },
+        [&]() { asyncFileLogger.flush(); });
+    asyncFileLogger.setFileSizeLimit(100000000);
+    //    LOG_DEBUG<<"debug log!"<<1;
+    //    LOG_TRACE<<"trace log!"<<2;
+    //    LOG_INFO<<"info log!"<<3;
+    //    LOG_WARN<<"warning log!"<<4;
+    //    if(1)
+    //        LOG_ERROR<<"error log!"<<5;
+    //    std::thread thread_([](){
+    //        LOG_FATAL<<"fatal log!"<<6;
+    //    });
+    //
+    //    FILE *fp=fopen("/notexistfile","rb");
+    //    if(fp==NULL)
+    //    {
+    //        LOG_SYSERR<<"syserr log!"<<7;
+    //    }
+
+    int i = 0;
+    while (i < 1000000)
+    {
+        ++i;
+        if (i % 100 == 0)
+        {
+            LOG_ERROR << "this is the " << i << "th log";
+            continue;
+        }
+        LOG_INFO << "this is the " << i << "th log";
+        ++i;
+        LOG_DEBUG << "this is the " << i << "th log";
+    }
+}
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

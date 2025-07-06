@@ -1,0 +1,54 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#pragma once
+#include <drogon/HttpSimpleController.h>
+#include <drogon/IOThreadStorage.h>
+using namespace drogon;
+namespace example
+{
+class TestController : public drogon::HttpSimpleController<TestController>
+{
+  public:
+    virtual void asyncHandleHttpRequest(
+        const HttpRequestPtr &req,
+        std::function<void(const HttpResponsePtr &)> &&callback) override;
+    PATH_LIST_BEGIN
+    // list path definations here;
+    // PATH_ADD("/path","filter1","filter2",...);
+    PATH_ADD("/", Get);
+    PATH_ADD("/Test", "nonFilter");
+    PATH_ADD("/tpost", Post, Options);
+    PATH_ADD("/slow", "TimeFilter", Get);
+    PATH_LIST_END
+    TestController()
+    {
+        LOG_DEBUG << "TestController constructor";
+    }
+
+  private:
+    drogon::IOThreadStorage<int> threadIndex_;
+};
+}  // namespace example
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

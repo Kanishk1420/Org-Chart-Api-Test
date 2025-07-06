@@ -1,0 +1,66 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+/**
+ *
+ *  @file NonCopyable.h
+ *  @author An Tao
+ *
+ *  Public header file in trantor lib.
+ *
+ *  Copyright 2018, An Tao.  All rights reserved.
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the License file.
+ *
+ *
+ */
+
+#pragma once
+
+#include <trantor/exports.h>
+
+namespace trantor
+{
+/**
+ * @brief This class represents a non-copyable object.
+ *
+ */
+class TRANTOR_EXPORT NonCopyable
+{
+  protected:
+    NonCopyable()
+    {
+    }
+    ~NonCopyable()
+    {
+    }
+    NonCopyable(const NonCopyable &) = delete;
+    NonCopyable &operator=(const NonCopyable &) = delete;
+    // some uncopyable classes maybe support move constructor....
+    NonCopyable(NonCopyable &&) noexcept(true) = default;
+    NonCopyable &operator=(NonCopyable &&) noexcept(true) = default;
+};
+
+}  // namespace trantor
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

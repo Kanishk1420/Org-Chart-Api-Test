@@ -1,0 +1,43 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#include <drogon/PubSubService.h>
+#include <drogon/drogon_test.h>
+
+DROGON_TEST(PubSubServiceTest)
+{
+    drogon::PubSubService<std::string> service;
+    auto id = service.subscribe("topic1",
+                                [TEST_CTX](const std::string &topic,
+                                           const std::string &message) {
+                                    CHECK(topic == "topic1");
+                                    CHECK(message == "hello world");
+                                });
+    service.publish("topic1", "hello world");
+    service.publish("topic2", "hello world");
+    CHECK(service.size() == 1UL);
+    service.unsubscribe("topic1", id);
+    CHECK(service.size() == 0UL);
+}
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

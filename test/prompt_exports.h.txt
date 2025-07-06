@@ -1,0 +1,68 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+
+#ifndef TRANTOR_EXPORT_H
+#define TRANTOR_EXPORT_H
+
+#ifdef TRANTOR_STATIC_DEFINE
+#  define TRANTOR_EXPORT
+#  define TRANTOR_NO_EXPORT
+#else
+#  ifndef TRANTOR_EXPORT
+#    ifdef trantor_EXPORTS
+        /* We are building this library */
+#      define TRANTOR_EXPORT 
+#    else
+        /* We are using this library */
+#      define TRANTOR_EXPORT 
+#    endif
+#  endif
+
+#  ifndef TRANTOR_NO_EXPORT
+#    define TRANTOR_NO_EXPORT 
+#  endif
+#endif
+
+#ifndef TRANTOR_DEPRECATED
+#  define TRANTOR_DEPRECATED __declspec(deprecated)
+#endif
+
+#ifndef TRANTOR_DEPRECATED_EXPORT
+#  define TRANTOR_DEPRECATED_EXPORT TRANTOR_EXPORT TRANTOR_DEPRECATED
+#endif
+
+#ifndef TRANTOR_DEPRECATED_NO_EXPORT
+#  define TRANTOR_DEPRECATED_NO_EXPORT TRANTOR_NO_EXPORT TRANTOR_DEPRECATED
+#endif
+
+/* NOLINTNEXTLINE(readability-avoid-unconditional-preprocessor-if) */
+#if 0 /* DEFINE_NO_DEPRECATED */
+#  ifndef TRANTOR_NO_DEPRECATED
+#    define TRANTOR_NO_DEPRECATED
+#  endif
+#endif
+
+#endif /* TRANTOR_EXPORT_H */
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

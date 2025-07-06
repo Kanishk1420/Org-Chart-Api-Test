@@ -1,0 +1,65 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+/**
+ *
+ *  RangeParser.h
+ *  He, Wanchen
+ *
+ *  Copyright 2021, He,Wanchen.  All rights reserved.
+ *  https://github.com/drogonframework/drogon
+ *  Use of this source code is governed by a MIT license
+ *  that can be found in the License file.
+ *
+ *  Drogon
+ *
+ */
+
+#include <string>
+#include <vector>
+#include <sys/types.h>
+
+namespace drogon
+{
+// [start, end)
+struct FileRange
+{
+    size_t start;
+    size_t end;
+};
+
+enum FileRangeParseResult
+{
+    InvalidRange = -1,
+    NotSatisfiable = 0,
+    SinglePart = 1,
+    MultiPart = 2
+};
+
+FileRangeParseResult parseRangeHeader(const std::string &rangeStr,
+                                      size_t contentLength,
+                                      std::vector<FileRange> &ranges);
+
+}  // namespace drogon
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

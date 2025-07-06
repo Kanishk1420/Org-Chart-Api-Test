@@ -1,0 +1,48 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#include "JsonTestController.h"
+#include <json/json.h>
+void JsonTestController::asyncHandleHttpRequest(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback)
+{
+    Json::Value json;
+    json["path"] = "json";
+    json["name"] = "json test";
+    Json::Value array;
+    for (int i = 0; i < 5; ++i)
+    {
+        Json::Value user;
+        user["id"] = i;
+        user["name"] = "none";
+        user["c_name"] = "张三";
+        array.append(user);
+    }
+    json["rows"] = array;
+    auto resp = HttpResponse::newHttpJsonResponse(json);
+    assert(resp->jsonObject().get());
+    callback(resp);
+}
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

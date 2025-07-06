@@ -1,0 +1,59 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+/**
+ *
+ *  TestPlugin.cc
+ *
+ */
+
+#include "TestPlugin.h"
+#include <thread>
+#include <chrono>
+using namespace std::chrono_literals;
+
+using namespace drogon;
+
+void TestPlugin::initAndStart(const Json::Value &config)
+{
+    /// Initialize and start the plugin
+    if (config.isNull())
+        LOG_DEBUG << "Configuration not defined";
+    interval_ = config.get("heartbeat_interval", 1).asInt();
+    workThread_ = std::thread([this]() {
+        while (!stop_)
+        {
+            LOG_DEBUG << "TestPlugin heartbeat!";
+            std::this_thread::sleep_for(std::chrono::seconds(interval_));
+        }
+    });
+}
+
+void TestPlugin::shutdown()
+{
+    /// Shutdown the plugin
+    stop_ = true;
+    workThread_.join();
+}
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

@@ -1,0 +1,60 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+/**
+ *
+ *  @file IntranetIpFilter.h
+ *  @author An Tao
+ *
+ *  Copyright 2018, An Tao.  All rights reserved.
+ *  https://github.com/an-tao/drogon
+ *  Use of this source code is governed by a MIT license
+ *  that can be found in the License file.
+ *
+ *  Drogon
+ *
+ */
+
+#pragma once
+
+#include <drogon/exports.h>
+#include <drogon/HttpFilter.h>
+
+namespace drogon
+{
+/**
+ * @brief A filter that prohibit access from external networks
+ */
+class DROGON_EXPORT IntranetIpFilter : public HttpFilter<IntranetIpFilter>
+{
+  public:
+    IntranetIpFilter()
+    {
+    }
+    virtual void doFilter(const HttpRequestPtr &req,
+                          FilterCallback &&fcb,
+                          FilterChainCallback &&fccb) override;
+};
+}  // namespace drogon
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

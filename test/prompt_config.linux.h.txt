@@ -1,0 +1,38 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#define HAVE_DECL__SC_HOST_NAME_MAX 1
+#define HAVE_INTTYPES_H 1
+#define HAVE_NETINET_IN_H 1
+#define HAVE_SRANDOM 1
+#define HAVE_STDINT_H 1
+#define HAVE_STDLIB_H 1
+#define HAVE_SYS_FILE_H 1
+#define HAVE_SYS_IOCTL_H 1
+#define HAVE_SYS_SOCKET_H 1
+#define HAVE_SYS_TIME_H 1
+#define HAVE_UNISTD_H 1
+#define HAVE_USLEEP 1
+#define PACKAGE_STRING "libuuid 1.0.3"
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

@@ -1,0 +1,77 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#include "MethodTest.h"
+static void makeGetRespose(
+    const std::function<void(const HttpResponsePtr &)> &callback)
+{
+    callback(drogon::HttpResponse::newHttpJsonResponse("GET"));
+}
+
+static void makePostRespose(
+    const std::function<void(const HttpResponsePtr &)> &callback)
+{
+    callback(drogon::HttpResponse::newHttpJsonResponse("POST"));
+}
+
+void MethodTest::get(const HttpRequestPtr &req,
+                     std::function<void(const HttpResponsePtr &)> &&callback)
+{
+    LOG_DEBUG;
+    makeGetRespose(callback);
+}
+void MethodTest::post(const HttpRequestPtr &req,
+                      std::function<void(const HttpResponsePtr &)> &&callback,
+                      std::string str)
+{
+    LOG_DEBUG << str;
+    makePostRespose(callback);
+}
+
+void MethodTest::getReg(const HttpRequestPtr &req,
+                        std::function<void(const HttpResponsePtr &)> &&callback,
+                        std::string regStr)
+{
+    LOG_DEBUG << regStr;
+    makeGetRespose(callback);
+}
+void MethodTest::postReg(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback,
+    std::string regStr,
+    std::string str)
+{
+    LOG_DEBUG << regStr;
+    LOG_DEBUG << str;
+    makePostRespose(callback);
+}
+
+void MethodTest::postRegex(
+    const HttpRequestPtr &req,
+    std::function<void(const HttpResponsePtr &)> &&callback,
+    std::string regStr)
+{
+    LOG_DEBUG << regStr;
+    makePostRespose(callback);
+}
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

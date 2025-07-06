@@ -4,6 +4,112 @@ A **RESTful API** built with [Drogon](https://github.com/drogonframework/drogon)
 
 🔐 **All routes are protected using JWT for token-based authentication**.
 
+## 🧪 Unit Test Generator
+
+This project includes an AI-assisted Unit Test Generator for C++ Drogon applications. The generator uses GitHub Copilot and a structured approach to create, refine, and analyze test coverage for the API.
+
+### 📝 Test Generation Approach
+
+The test generator implements a multi-stage approach:
+
+1. **Source Code Analysis**: Automatically scans controller files to identify endpoints and routes
+2. **Prompt Generation**: Creates AI-ready prompts for GitHub Copilot
+3. **Test Generation**: Produces two types of tests:
+   - **Template-based tests**: Detailed tests with specific assertions
+   - **Stub tests**: Simplified tests that compile without external dependencies
+
+### 🛠️ Tools and Components
+
+The test generator consists of:
+
+1. **`generate_tests.cpp`**: C++ generator script that:
+   - Scans the codebase for controllers and API endpoints
+   - Creates AI-ready prompts
+   - Generates test files from templates
+
+2. **`test_generation_config.yaml`**: Configuration file defining:
+   - Test framework (Drogon)
+   - Coverage targets
+   - Assertion types
+   - Test case categories
+
+3. **`test_template.txt`**: Template for generating structured test cases
+
+### 📊 Test Coverage Results
+
+The generated tests achieved:
+- 100% coverage of test code (71/71 lines)
+- 40.6% coverage of Drogon core components
+- 17.3% overall project coverage (4,806/27,786 lines)
+![Coverage Report](/orgChartApi/test/Screenshot%202025-07-06%20134449.png)
+*LCOV coverage report showing line and function coverage across project components*
+
+### 🚀 How to Use the Test Generator
+
+1. **Build the Test Generator**:
+   ```bash
+   g++ generate_tests.cpp -o generate_tests
+   ```
+
+2. **Run the Generator**:
+   ```bash
+   ./generate_tests
+   ```
+
+3. **Review and Refine Generated Tests**:
+   - Examine the generated test files in the `test/` directory
+   - Use GitHub Copilot to complete test implementations
+
+4. **Run the Tests**:
+   ```bash
+   cd build
+   cmake .. -DBUILD_TESTING=ON
+   make
+   ./test/unittest
+   ```
+
+5. **Generate Coverage Report**:
+   ```bash
+   cd build
+   lcov --capture --directory . --output-file coverage.info
+   genhtml coverage.info --output-directory coverage_report
+   ```
+
+### 🐳 Testing with Docker
+
+For a consistent testing environment, use the provided Dockerfile:
+
+```bash
+docker build -t org-chart-tests .
+docker run -it org-chart-tests
+```
+
+This will build the project, run all tests, and generate a coverage report.
+
+### 📋 Test Categories
+
+The generator creates tests for:
+- **Positive Cases**: Verify correct behavior with valid inputs
+- **Negative Cases**: Verify error handling with invalid inputs
+- **Edge Cases**: Test boundary conditions and unusual scenarios
+
+### 🔍 Controllers Tested
+
+1. **AuthController**:
+   - Register user endpoint
+   - Login user endpoint
+   
+2. **DepartmentsController**:
+   - List departments
+   - Get department by ID
+   - Create department
+   
+3. **PersonsController**:
+   - List people
+   - Get person by ID
+   - Create/update/delete person
+
+---
 
 ## 📚 Endpoints
 
@@ -326,6 +432,62 @@ Sample response:
 ```
 
 ---
+
+## 🔧 Tools & Technologies Used
+
+This project uses several specialized tools and technologies that may be unfamiliar to those new to C++ development. Here's a brief overview:
+
+### Core Technologies
+
+1. **C++**: A powerful, high-performance programming language used for system-level programming and applications requiring efficient resource usage.
+
+2. **[Drogon](https://github.com/drogonframework/drogon)**: A high-performance C++ web framework with the following features:
+   - **Fast**: Capable of handling high concurrent connections with minimal overhead
+   - **Asynchronous**: Non-blocking I/O operations for efficient resource usage
+   - **Modern**: Uses C++14/17 features for clean, maintainable code
+   - **ORM Support**: Built-in object-relational mapping for database operations
+
+3. **PostgreSQL**: A powerful, open-source relational database system used to store the application data.
+
+### Testing Tools
+
+1. **GoogleTest**: Google's C++ testing framework that provides:
+   - Easy test case creation and organization
+   - Rich set of assertions for validating results
+   - Test fixtures for sharing resources across tests
+
+2. **LCOV**: A code coverage analysis tool for C/C++ that:
+   - Collects execution data during test runs
+   - Generates HTML reports showing code coverage metrics
+   - Helps identify untested parts of the codebase
+
+3. **genhtml**: A tool that converts LCOV data into human-readable HTML reports with:
+   - Color-coded source code highlighting showing covered/uncovered lines
+   - Summary statistics for directories and files
+   - Navigation features for browsing complex codebases
+
+### Build Tools
+
+1. **CMake**: A cross-platform build system generator that:
+   - Creates build files (Makefiles, Visual Studio projects, etc.) from a single configuration
+   - Manages dependencies between components
+   - Supports build variants (debug, release, etc.)
+
+2. **Docker**: A containerization platform that:
+   - Provides consistent environments across development and production
+   - Eliminates "works on my machine" problems
+   - Simplifies dependency management
+
+### Development Tools
+
+1. **GitHub Copilot**: An AI pair programming tool that:
+   - Suggests code completions based on context
+   - Helps generate test cases and implementations
+   - Accelerates development by reducing boilerplate coding
+
+2. **JWT (JSON Web Tokens)**: A compact, URL-safe means of representing claims securely between parties, used for authentication in the API.
+
+For users new to C++ development, this project uses Docker to simplify the setup process, so you can get started without installing all these tools individually.
 
 ## 🧯 Troubleshooting
 

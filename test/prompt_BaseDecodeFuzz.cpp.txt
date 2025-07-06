@@ -1,0 +1,38 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#include <jwt-cpp/base.h>
+
+extern "C" {
+
+int LLVMFuzzerTestOneInput(const uint8_t* Data, size_t Size) {
+	try {
+		const auto bin = jwt::base::decode<jwt::alphabet::base64>(std::string{(char*)Data, Size});
+	} catch (const std::runtime_error&) {
+		// parse errors are ok, because input may be random bytes
+	}
+	return 0; // Non-zero return values are reserved for future use.
+}
+}
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

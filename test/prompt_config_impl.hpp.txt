@@ -1,0 +1,38 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#ifndef Z_VCPKG_FOONATHAN_MEMORY_DEBUG
+# if defined(NDEBUG) && !defined(_DEBUG)
+#  define Z_VCPKG_FOONATHAN_MEMORY_DEBUG 0
+# else
+#  define Z_VCPKG_FOONATHAN_MEMORY_DEBUG 1
+# endif
+#endif
+
+#if Z_VCPKG_FOONATHAN_MEMORY_DEBUG
+#  include "config_impl-debug.hpp"
+#else
+#  include "config_impl-release.hpp"
+#endif
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

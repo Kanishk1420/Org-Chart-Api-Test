@@ -1,0 +1,69 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#include <trantor/net/EventLoopThread.h>
+#include <iostream>
+#include <atomic>
+#include <future>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
+
+int main()
+{
+    std::atomic<uint64_t> counter;
+    counter = 0;
+    std::promise<int> pro;
+    auto ft = pro.get_future();
+    trantor::EventLoopThread loopThread;
+
+    auto loop = loopThread.getLoop();
+    loop->runInLoop([&counter, &pro, loop]() {
+        for (int i = 0; i < 10000; ++i)
+        {
+            loop->queueInLoop([&counter, &pro]() {
+                ++counter;
+                if (counter.load() == 110000)
+                    pro.set_value(1);
+            });
+        }
+    });
+    for (int i = 0; i < 10; ++i)
+    {
+        std::thread([&counter, loop, &pro]() {
+            for (int i = 0; i < 10000; ++i)
+            {
+                loop->runInLoop([&counter, &pro]() {
+                    ++counter;
+                    if (counter.load() == 110000)
+                        pro.set_value(1);
+                });
+            }
+        }).detach();
+    }
+    loopThread.run();
+    ft.get();
+    std::cout << "counter=" << counter.load() << std::endl;
+}
+
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

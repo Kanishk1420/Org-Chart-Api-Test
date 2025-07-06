@@ -1,0 +1,52 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#include <drogon/drogon_test.h>
+
+namespace api
+{
+namespace v1
+{
+template <typename T>
+class handler : public drogon::DrObject<T>
+{
+  public:
+    static std::string name()
+    {
+        return handler<T>::classTypeName();
+    }
+};
+class hh : public handler<hh>
+{
+};
+}  // namespace v1
+}  // namespace api
+
+DROGON_TEST(ClassName)
+{
+    api::v1::hh h;
+    CHECK(h.className() == "api::v1::hh");
+    CHECK(api::v1::hh::classTypeName() == "api::v1::hh");
+    CHECK(h.name() == "api::v1::hh");
+}
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.

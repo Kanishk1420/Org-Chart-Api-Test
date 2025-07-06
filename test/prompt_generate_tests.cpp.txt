@@ -1,0 +1,222 @@
+Please generate a unit test for the following C++ code using the Drogon testing framework.
+
+Configuration:
+test_generation:
+  framework: drogon
+  test_location: "./test"
+  test_naming_convention: "test_{controller}_{action}.cc"
+  coverage:
+    - controllers
+    - models
+    - services
+  assertions:
+    - response_code
+    - response_body
+    - error_handling
+  test_cases:
+    - positive_cases: true
+    - negative_cases: true
+    - edge_cases: true
+  generate_mocks: true
+
+Source code to test:
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <windows.h>
+#include <direct.h>
+#include <regex>
+
+// Function to read file content
+std::string readFile(const std::string& path) {
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << path << std::endl;
+        return "";
+    }
+    
+    return std::string(
+        std::istreambuf_iterator<char>(file),
+        std::istreambuf_iterator<char>()
+    );
+}
+
+// Function to write content to file
+void writeFile(const std::string& path, const std::string& content) {
+    std::ofstream file(path);
+    if (!file.is_open()) {
+        std::cerr << "Failed to create file: " << path << std::endl;
+        return;
+    }
+    
+    file << content;
+    file.close();
+    std::cout << "Created file: " << path << std::endl;
+}
+
+// Function to get filename from path
+std::string getFilename(const std::string& path) {
+    size_t pos = path.find_last_of("/\\");
+    if (pos == std::string::npos) {
+        return path;
+    }
+    return path.substr(pos + 1);
+}
+
+// Function to get file extension
+std::string getExtension(const std::string& path) {
+    size_t pos = path.find_last_of(".");
+    if (pos == std::string::npos) {
+        return "";
+    }
+    return path.substr(pos);
+}
+
+// Check if directory exists
+bool directoryExists(const std::string& path) {
+    DWORD attrs = GetFileAttributesA(path.c_str());
+    return (attrs != INVALID_FILE_ATTRIBUTES && 
+           (attrs & FILE_ATTRIBUTE_DIRECTORY));
+}
+
+// Create directory
+bool createDirectory(const std::string& path) {
+    return _mkdir(path.c_str()) == 0;
+}
+
+// Recursively find files
+void findFiles(const std::string& dir, std::vector<std::string>& files, 
+               const std::vector<std::string>& extensions) {
+    std::string search_path = dir + "\\*.*";
+    WIN32_FIND_DATAA fd;
+    HANDLE hFind = FindFirstFileA(search_path.c_str(), &fd);
+    
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            std::string name = fd.cFileName;
+            if (name != "." && name != "..") {
+                std::string path = dir + "\\" + name;
+                
+                if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+                    // Skip the test directory
+                    if (name != "test") {
+                        findFiles(path, files, extensions);
+                    }
+                } else {
+                    std::string ext = getExtension(name);
+                    // Convert to lowercase for comparison
+                    std::string ext_lower = ext;
+                    for (char& c : ext_lower) {
+                        c = std::tolower(c);
+                    }
+                    
+                    for (const auto& valid_ext : extensions) {
+                        if (ext_lower == valid_ext) {
+                            files.push_back(path);
+                            break;
+                        }
+                    }
+                }
+            }
+        } while (FindNextFileA(hFind, &fd));
+        FindClose(hFind);
+    }
+}
+
+// Add to generate_tests.cpp:
+void generateTestFromTemplate(const std::string& controller, const std::string& method, 
+                             const std::string& endpoint, const std::string& httpMethod,
+                             const std::string& requestFields, const std::string& responseAssertions) {
+    std::string templateContent = readFile("test_template.txt");
+    
+    // Replace placeholders
+    templateContent = std::regex_replace(templateContent, std::regex("\\{controller_name\\}"), controller);
+    templateContent = std::regex_replace(templateContent, std::regex("\\{method_name\\}"), method);
+    templateContent = std::regex_replace(templateContent, std::regex("\\{endpoint_path\\}"), endpoint);
+    templateContent = std::regex_replace(templateContent, std::regex("\\{http_method\\}"), httpMethod);
+    templateContent = std::regex_replace(templateContent, std::regex("\\{request_fields\\}"), requestFields);
+    templateContent = std::regex_replace(templateContent, std::regex("\\{response_assertions\\}"), responseAssertions);
+    
+    std::string filename = "test_" + controller + "_" + method + ".cc";
+    writeFile("test/" + filename, templateContent);
+}
+
+// Main function
+int main() {
+    std::cout << "Starting test generation...\n";
+    
+    // Load configuration
+    std::string config = readFile("test_generation_config.yaml");
+    if (config.empty()) {
+        std::cerr << "Failed to load config file." << std::endl;
+        return 1;
+    }
+    
+    // Find all C++ files in the project
+    std::vector<std::string> files_to_test;
+    std::vector<std::string> extensions = {".cc", ".cpp", ".h", ".hpp"};
+    findFiles(".", files_to_test, extensions);
+    
+    std::cout << "Found " << files_to_test.size() << " files to generate tests for.\n";
+    
+    // Create test directory if it doesn't exist
+    if (!directoryExists("test")) {
+        if (createDirectory("test")) {
+            std::cout << "Created test directory\n";
+        } else {
+            std::cerr << "Failed to create test directory\n";
+            return 1;
+        }
+    }
+    
+    // Generate a prompt file for each C++ file
+    for (const auto& file : files_to_test) {
+        std::string code = readFile(file);
+        std::string filename = getFilename(file);
+        std::string prompt_file = "test/prompt_" + filename + ".txt";
+        
+        std::string prompt = "Please generate a unit test for the following C++ code using the Drogon testing framework.\n\n";
+        prompt += "Configuration:\n" + config + "\n\n";
+        prompt += "Source code to test:\n" + code + "\n\n";
+        prompt += "Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.";
+        
+        writeFile(prompt_file, prompt);
+    }
+    
+    std::cout << "Generated prompt files in the test directory.\n";
+    std::cout << "Open these files with GitHub Copilot to generate the actual tests.\n";
+
+    // Generate template-based tests for known endpoints
+    std::cout << "\nGenerating template-based tests for known endpoints...\n";
+
+    // AuthController - Register
+    generateTestFromTemplate(
+        "Auth", "Register",
+        "/api/v1/auth/register", "Post",
+        "request[\"username\"] = \"testuser\";\n    request[\"password\"] = \"password123\";",
+        "REQUIRE(json.isMember(\"username\"));\n        REQUIRE(json.isMember(\"token\"));\n        REQUIRE(json[\"username\"].asString() == \"testuser\");"
+    );
+
+    // AuthController - Login
+    generateTestFromTemplate(
+        "Auth", "Login",
+        "/api/v1/auth/login", "Post",
+        "request[\"username\"] = \"testuser\";\n    request[\"password\"] = \"password123\";",
+        "REQUIRE(json.isMember(\"username\"));\n        REQUIRE(json.isMember(\"token\"));"
+    );
+
+    // DepartmentController - List
+    generateTestFromTemplate(
+        "Department", "List",
+        "/api/v1/departments", "Get",
+        "// No request fields for GET",
+        "REQUIRE(json.isArray());"
+    );
+
+    std::cout << "Generated template-based tests.\n";
+    
+    return 0;
+}
+
+Generate comprehensive unit tests that cover positive cases, negative cases, and edge cases.
