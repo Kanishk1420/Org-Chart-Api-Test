@@ -41,7 +41,7 @@ The generated tests achieved:
 - 100% coverage of test code (71/71 lines)
 - 40.6% coverage of Drogon core components
 - 17.3% overall project coverage (4,806/27,786 lines)
-![Coverage Report](/orgChartApi/Screenshot%202025-07-06%20134449.png)
+![Coverage Report](./docs/images/Screenshot%202025-07-06%20134449.png)
 *LCOV coverage report showing line and function coverage across project components*
 
 ### 🚀 How to Use the Test Generator
